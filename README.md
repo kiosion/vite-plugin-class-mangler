@@ -3,24 +3,23 @@
 
 Vite plugin to minify & obfuscate CSS classes when building for production.
 
-<img width="962" alt="Screen Shot 2022-06-10 at 07 15 21" src="https://user-images.githubusercontent.com/20674057/172965716-fa2e62a3-1823-4abe-8a33-11b83cf0f56a.png">
-<img width="958" alt="Screen Shot 2022-06-10 at 07 14 37" src="https://user-images.githubusercontent.com/20674057/172965725-f1f16f35-2611-4b6a-9d9d-851e006180ad.png">
+<img width="948" alt="Before" src="https://user-images.githubusercontent.com/20674057/172965716-fa2e62a3-1823-4abe-8a33-11b83cf0f56a.png">
+<img width="948" alt="After" src="https://user-images.githubusercontent.com/20674057/172965725-f1f16f35-2611-4b6a-9d9d-851e006180ad.png">
 
 
 ## Installation
 
 
 > **Warning**
-> This plugin is still in development and very broken. 
+> This plugin is still in development (and very broken)
 
 
-Install plugin using yarn
-
+Clone, build, then install using yarn:
 ```bash
 yarn add -D vite-plugin-class-mangler@file:./path-to-dist/
 ```
 
-## Config
+## Usage
 
 ```js
 import { defineConfig } from 'vite';
@@ -52,3 +51,6 @@ To run tests, run the following command
 npm run test
 ```
 
+## Credits
+
+Forked from [vite-plugin-tailwind-obfuscate](https://github.com/misbahansori/vite-plugin-tailwind-obfuscate)
