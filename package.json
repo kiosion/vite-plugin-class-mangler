@@ -1,0 +1,39 @@
+{
+  "name": "vite-plugin-class-mangler",
+  "version": "0.0.1",
+  "description": "",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsup-node src/index.ts --format esm,cjs --no-splitting --shims",
+    "dev": "tsup-node src/index.ts --format esm,cjs --watch",
+    "vue:dev": "cd example/vue && vite",
+    "react:dev": "cd example/react && vite",
+    "svelte:dev": "cd example/svelte && vite",
+    "release": "npm run build && bumpp --commit --tag --push && npm publish",
+    "test": "vitest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kiosion/vite-plugin-class-mangler.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kiosion/vite-plugin-class-mangler/issues"
+  },
+  "devDependencies": {
+    "@types/randomstring": "^1.1.8",
+    "bumpp": "^7.1.1",
+    "randomstring": "^1.2.2",
+    "rollup": "^2.75.6",
+    "tsup": "^6.1.0",
+    "vite": "^2.9.10",
+    "vitest": "^0.14.1",
+    "vite-plugin-inspect": "^1.1.8"
+  }
+}
