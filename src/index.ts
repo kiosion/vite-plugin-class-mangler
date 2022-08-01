@@ -1,27 +1,27 @@
-import type { Plugin } from "vite";
-import transformCSSFiles from "./modules/css";
-import transformHtmlFiles from "./modules/html";
-import { endsWithAny } from "./utils";
+import type { Plugin } from 'vite';
+import transformCSSFiles from './modules/css';
+import transformHtmlFiles from './modules/html';
+import { endsWithAny } from './utils';
 
 export default function ClassMangler(config: PluginConfig = {}): Plugin[] {
   const classMapping = new Map();
 
   const plugins: Plugin[] = [
     {
-      name: "class-mangler-html",
-      apply: config.dev ? "serve" : "build",
-      enforce: "pre",
+      name: 'class-mangler-html',
+      apply: config.dev ? 'serve' : 'build',
+      enforce: 'pre',
       transform(code, id) {
-        if (endsWithAny(["svelte", "html"], id)) {
+        if (endsWithAny(['svelte', 'html'], id)) {
           return transformHtmlFiles(code, classMapping, config);
         }
-      },
+      }
     },
     {
-      name: "class-mangler-css",
-      apply: config.dev ? "serve" : "build",
+      name: 'class-mangler-css',
+      apply: config.dev ? 'serve' : 'build',
       transform(code, id) {
-        if (id.endsWith(".css")) {
+        if (id.endsWith('.css')) {
           return transformCSSFiles(code, classMapping);
         }
       },
@@ -33,12 +33,12 @@ export default function ClassMangler(config: PluginConfig = {}): Plugin[] {
         });
 
         this.emitFile({
-          type: "asset",
-          name: "class-mapping.json",
-          source: JSON.stringify(classMappingObject),
+          type: 'asset',
+          name: 'class-mapping.json',
+          source: JSON.stringify(classMappingObject)
         });
-      },
-    },
+      }
+    }
   ];
 
   if (config.dev) {

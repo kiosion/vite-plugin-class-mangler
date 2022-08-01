@@ -1,32 +1,42 @@
-import { escapeClassName, randomClassName } from "../utils";
+import { escapeClassName, randomClassName } from '../utils';
 
 export default function transformHtmlFiles(
   code: string,
   classMapping: Map<string, string>,
   config: GeneratorConfig
 ) {
-    // /:class="[^"]*\?(?: *)?'([a-z-0-9\\\[\]\/\(\)\.: ]*)'(?: *)?[^"]*:(?: *)?'([a-z-0-9\\\[\]\/\(\)\.: ]*)'[^"]*/g,
-    // // React class names
-    // /className: "([a-z-0-9\?\\\[\]\/\(\)\.': ]*)"/g,
-    // // React class names using tenary operator
-    // /className: `([a-z-0-9\?\\\[\]\/\(\)\.': ]*)\${/g,
-    // /className: `.* ?"([a-z-0-9\?\\\[\]\/\(\)\.': ]*)"/g,
+  // /:class="[^"]*\?(?: *)?'([a-z-0-9\\\[\]\/\(\)\.: ]*)'(?: *)?[^"]*:(?: *)?'([a-z-0-9\\\[\]\/\(\)\.: ]*)'[^"]*/g,
+  // // React class names
+  // /className: "([a-z-0-9\?\\\[\]\/\(\)\.': ]*)"/g,
+  // // React class names using tenary operator
+  // /className: `([a-z-0-9\?\\\[\]\/\(\)\.': ]*)\${/g,
+  // /className: `.* ?"([a-z-0-9\?\\\[\]\/\(\)\.': ]*)"/g,
   const classRegexs = [
-    /class="[^"]([a-zA-Z-0-9\\\/\.':\-\_ ]*)"/g,
-    /class="\${"([a-zA-Z-0-9\\\/\.':\-\_ ]+)"}"/g,
-    /class="\${"([a-zA-Z-0-9\\\/\.':\-\_ ]*(?=:(?:[ ]*"+[ ]*)escape\(.*\) \+ " )*[a-zA-Z-0-9\\\/\.':\-\_ ]*)"}"/g,
-    /(class="\${\[\s*)(?:("[a-zA-Z-0-9\\\/\.':\-\_ ]*",*\s*)*)(?:(?:\(.*?("[a-zA-Z-0-9\\\/\.':\-\_ ]*") : ("[a-zA-Z-0-9\\\/\.':\-\_ ]*")\))*(?:.*?\+ \(.*?\?.*?("[a-zA-Z-0-9\\\/\.':\-\_ ]*")\))*\s*)(\](?:\.join\(.*\)\.trim\(\))*}")/g,
-    /(?:class",\s*?)("[a-zA-Z-0-9\\\/\.':\-\_ ]*")+/g
+    // /class="[^"]([a-zA-Z-0-9\\/.':\-_ ]*)"/gm,
+    // /class="\${"([a-zA-Z-0-9\\/.':\-_ ]+)"}"/gm,
+    // /class="\${"([a-zA-Z-0-9\\/.':\-_ ]*(?=:(?:[ ]*"+[ ]*)escape\(.*\) \+ " )*[a-zA-Z-0-9\\/.':\-_ ]*)"}"/gm,
+    // /(class="\${\[\s*)(?:("[a-zA-Z-0-9\\/.':\-_ ]*",*\s*)*)(?:(?:\(.*?("[a-zA-Z-0-9\\/.':\-_ ]*") : ("[a-zA-Z-0-9\\/.':\-_ ]*")\))*(?:.*?\+ \(.*?\?.*?("[a-zA-Z-0-9\\/.':\-_ ]*")\))*\s*)(\](?:\.join\(.*\)\.trim\(\))*}")/gm,
+    // /(?:class",\s*?)("[a-zA-Z-0-9\\/.':\-_ ]*")+/gm
+    new RegExp('(?<=class["\'],\\s*["\']).*?(?=["\'])', 'gm')
   ];
+
   const rawClasses = getRawClasses(classRegexs, code);
+
+  // const rawClasses = gotRawClasses.forEach((rawClass) => {
+  //   rawClass.replace(/'/g, '').replace(/"/g, '');
+  // });
+
+  console.log('\n\nrawClasses:', rawClasses);
 
   const unqiueClasses = new Set(
     rawClasses
-      .map((c) => c.split(" "))
+      .map((c) => c.split(' '))
       .flat()
       .filter((c) => c.length > 0)
       .sort((a, b) => b.length - a.length)
   );
+
+  console.log('unqiueClasses:', unqiueClasses);
 
   unqiueClasses.forEach((className) => {
     let random = randomClassName(config);
@@ -36,54 +46,43 @@ export default function transformHtmlFiles(
       random = randomClassName(config);
     }
 
-    if (className.indexOf('s-') === -1) {
-      classMapping.set(className, random);
-    } else {
-      className.charAt(className.length - 1) === "\"" && (className = className.slice(0, -1));
-      classMapping.set(className, className);
-    }
+    classMapping.set(className, random);
   });
 
   const rawClassesMap = new Map();
 
   rawClasses.forEach((classNames) => {
     const randomClassNames = classNames
-      .split(" ")
+      .split(' ')
       .map((className) => {
         if (classMapping.has(className)) {
           return classMapping.get(className);
         }
       })
-      .join(" ");
+      .join(' ');
 
     rawClassesMap.set(classNames, randomClassNames);
   });
+
+  console.log('rawClassesMap:', rawClassesMap);
 
   rawClasses
     .sort((a, b) => b.length - a.length)
     .forEach((classNames) => {
       let match: RegExpExecArray;
-      const regex = new RegExp(escapeClassName(classNames), "g");
+      const regex = new RegExp(escapeClassName(classNames), 'g');
       while ((match = regex.exec(code)) !== null) {
-        if (match.index && `${code[match.index]}${code[match.index + 1]}` !== "s-") {
-          if (match.index > 0 && code[match.index - 2] === ",") {
-            code = code.replace(
-              match[0],
-              `"${rawClassesMap.get(classNames)}"`
-            );
-          } else {
-            code = code.replace(
-              match[0],
-              `${rawClassesMap.get(classNames)}`
-            );
-          }
+        if (match.index > 0 && code[match.index - 2] === ',') {
+          code = code.replace(match[0], `"${rawClassesMap.get(classNames)}"`);
+        } else {
+          code = code.replace(match[0], `${rawClassesMap.get(classNames)}`);
         }
       }
     });
 
   return {
     code,
-    map: null,
+    map: null
   };
 }
 
@@ -104,4 +103,3 @@ function getRawClasses(classRegexs: RegExp[], code: string) {
 
   return rawClasses;
 }
-

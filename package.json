@@ -1,39 +1,60 @@
 {
   "name": "vite-plugin-class-mangler",
   "version": "0.0.1",
-  "description": "",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "description": "Vite plugin for minifying and obfuscating CSS class names in production",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "files": [
-    "dist"
+    "dist",
+    "*.d.ts"
   ],
   "scripts": {
-    "build": "tsup-node src/index.ts --format esm,cjs --no-splitting --shims",
-    "dev": "tsup-node src/index.ts --format esm,cjs --watch",
-    "vue:dev": "cd example/vue && vite",
-    "react:dev": "cd example/react && vite",
-    "svelte:dev": "cd example/svelte && vite",
-    "release": "npm run build && bumpp --commit --tag --push && npm publish",
-    "test": "vitest"
+    "build": "yarn lint && rimraf ./dist && tsup-node ./src/index.ts --format cjs,esm --dts ./src/index.ts",
+    "lint": "prettier --write src/**/*.ts && eslint --fix src/**/*.ts",
+    "setup": "yarn husky install && chmod ug+x .husky/* && yarn husky add .husky/pre-commit 'yarn lint-staged'",
+    "publish": "npm publish",
+    "test": "vitest run"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/kiosion/vite-plugin-class-mangler.git"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "keywords": [
+    "vite-plugin",
+    "tailwind",
+    "class minifier"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "require": "./dist/index.js",
+      "import": "./dist/index.mjs"
+    },
+    "./*": "./*"
+  },
+  "author": "kiosion",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/kiosion/vite-plugin-class-mangler/issues"
   },
+  "peerDependencies": {
+    "vite": "^3.0.0"
+  },
   "devDependencies": {
     "@types/randomstring": "^1.1.8",
+    "@typescript-eslint/eslint-plugin": "^5.31.0",
+    "@typescript-eslint/parser": "^5.31.0",
+    "@vitest/ui": "^0.20.2",
     "bumpp": "^7.1.1",
+    "eslint": "^8.20.0",
+    "husky": "^8.0.1",
+    "lint-staged": "^13.0.3",
+    "prettier": "^2.7.1",
     "randomstring": "^1.2.2",
+    "rimraf": "^3.0.2",
     "rollup": "^2.75.6",
     "tsup": "^6.1.0",
-    "vite": "^2.9.10",
-    "vitest": "^0.14.1",
-    "vite-plugin-inspect": "^1.1.8"
+    "typescript": "^4.7.4",
+    "vitest": "^0.20.2"
   }
 }
