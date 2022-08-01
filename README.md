@@ -6,8 +6,8 @@
 
 ## Supported frameworks
 
-- Vue (WIP)
-- React (WIP)
+- Vue (In progress)
+- React (In progress)
 - Svelte
 
 ## Installation
@@ -15,33 +15,47 @@
 > **Warning**
 > This plugin is still in development (and very broken)
 
-Clone, build, then install using yarn:
+Install using yarn or npm:
 ```bash
-yarn add -D vite-plugin-class-mangler@file:./path-to-dist/
+yarn add -D vite-plugin-class-mangler
 ```
 
 ## Usage
 
+Add to your vite config:
+
 ```js
 import { defineConfig } from 'vite';
-import classMangler from 'vite-plugin-class-mangler';
+import ClassMangler from 'vite-plugin-class-mangler';
 
 export default defineConfig({
   plugins: [
-    ClassMangler({
-      dev: true,   // Bool, 'true' enables plugin in non-prod environments
-      min: 2,      // Int, mininum number of chars in the generated classes
-      max: 6,      // Int, maximum number of chars in the generated classes
-      length: 8,   // Int, number of chars in the generated classes. If specified, min/max will be ignored
-      suffixes: [] // String[], suffixes to transform. Defaults to ['.svelte', '.tsx', '.jsx', '.html', '.vue']
-    })
+    ClassMangler()
   ]
 });
 ```
-    
+
+Optionally, customize any of the following options:
+
+```js
+ClassMangler({
+  dev: true,
+  min: 2,
+  max: 6,
+  length: 8,
+  suffixes: ['.svelte', '.html']
+})
+```
+
+'Dev' determines whether to apply the plugin on serve or build. It defaults to 'false', only replacing class names in production builds.
+
+Min / max are inclusive integers used for randomizing the length of the generated classes. If 'length' is provided instead, these will be ignored.
+
+Suffixes can be overriden, provided as an array of strings, although the defaults should work in most cases (['.svelte', '.tsx', '.jsx', '.html', '.vue']).
+
 ## Testing
 
-Run all unit tests:
+Run unit tests:
 
 ```bash
 yarn test
