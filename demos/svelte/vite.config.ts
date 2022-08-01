@@ -7,7 +7,8 @@ export default defineConfig({
   plugins: [
     svelte(),
     ClassMangler({
-      dev: true
+      dev: true,
+      length: 4
     }),
     Inspect()
   ]

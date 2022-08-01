@@ -1,28 +1,32 @@
 import type { Plugin } from 'vite';
-import transformCSSFiles from './modules/css';
-import transformHtmlFiles from './modules/html';
-import { endsWithAny } from './utils';
+import transformStyles from './modules/styles';
+import transformTemplates from './modules/templates';
+import { endsWith } from './utils';
+
+const defaultSuffixes = ['.svelte', '.html', '.vue', '.jsx', '.tsx'];
 
 export default function ClassMangler(config: PluginConfig = {}): Plugin[] {
+  config.suffixes = config.suffixes || defaultSuffixes;
+
   const classMapping = new Map();
 
   const plugins: Plugin[] = [
     {
-      name: 'class-mangler-html',
+      name: 'class-mangler-templates',
       apply: config.dev ? 'serve' : 'build',
       enforce: 'pre',
       transform(code, id) {
-        if (endsWithAny(['svelte', 'html'], id)) {
-          return transformHtmlFiles(code, classMapping, config);
+        if (endsWith(id, config.suffixes)) {
+          return transformTemplates(id, code, classMapping, config);
         }
       }
     },
     {
-      name: 'class-mangler-css',
+      name: 'class-mangler-styles',
       apply: config.dev ? 'serve' : 'build',
       transform(code, id) {
-        if (id.endsWith('.css')) {
-          return transformCSSFiles(code, classMapping);
+        if (endsWith(id, ['.css'])) {
+          return transformStyles(code, classMapping);
         }
       },
       generateBundle() {

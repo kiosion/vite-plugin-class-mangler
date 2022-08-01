@@ -1,5 +1,6 @@
 interface PluginConfig extends GeneratorConfig {
   dev?: boolean;
+  suffixes?: string[];
 }
 
 interface GeneratorConfig {
