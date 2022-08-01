@@ -29,10 +29,11 @@ import classMangler from 'vite-plugin-class-mangler';
 export default defineConfig({
   plugins: [
     ClassMangler({
-      dev: true,  // Bool, 'true' enables plugin in non-prod environments
-      min: 2,     // Int, mininum number of chars in the generated classes
-      max: 6,     // Int, maximum number of chars in the generated classes
-      length: 8   // Int, number of chars in the generated classes. If specified, min/max will be ignored
+      dev: true,   // Bool, 'true' enables plugin in non-prod environments
+      min: 2,      // Int, mininum number of chars in the generated classes
+      max: 6,      // Int, maximum number of chars in the generated classes
+      length: 8,   // Int, number of chars in the generated classes. If specified, min/max will be ignored
+      suffixes: [] // String[], suffixes to transform. Defaults to ['.svelte', '.tsx', '.jsx', '.html', '.vue']
     })
   ]
 });
