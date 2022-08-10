@@ -4,6 +4,10 @@
   <img width="948" alt="Before/after" src="https://user-images.githubusercontent.com/34040324/182059296-031701cf-da83-4b34-a232-9e9b52c97b56.png">
 </div>
 
+<br />
+
+> This plugin is still a work-in-progress, I'm currently working out how to extract used classes from templates & scripts before bundling, and replace all references within style tags, css, and scss files after parsing - The 'buildEnd' hook would be good timeline-wise, but doesn't allow for modification of the code. If you're knowledgable with the Vite/Rollup plugin APIs, contributions would be appreciated!
+
 ## Supported frameworks
 
 - Vue (In progress)
