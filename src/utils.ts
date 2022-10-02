@@ -38,10 +38,7 @@ export const cssPseudo = [
 export const cssPseudoRegex = cssPseudo.join('|');
 
 export const escapeClassName = (className: string) => {
-  let res = className.replace(/[/\\^$*+?.()|[\]{}]/g, '\\$&');
-  res.charAt(0) === '"' && (res = res.slice(1));
-  res.charAt(res.length - 1) === '"' && (res = res.slice(0, -1));
-  return res;
+  return className.replace(/[/\\^$*+?.()|[\]{}:]/g, '\\\\$&');
 };
 
 export const removeCssPsuedoSelector = (code: string) => {

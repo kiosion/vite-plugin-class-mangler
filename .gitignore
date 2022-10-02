@@ -3,3 +3,4 @@
 **/dist-ssr
 **/.DS_Store
 **/*-error.log
+**/.vscode/*

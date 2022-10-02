@@ -17,14 +17,16 @@ export default function transformTemplates(
   );
 
   unqiueClasses.forEach((className) => {
-    let random = getRandomClassName(config);
-    const classMappingList = Array.from(classMapping.values());
+    if (!classMapping.has(className)) {
+      let random = getRandomClassName(config);
+      const classMappingList = Array.from(classMapping.values());
 
-    while (classMappingList.includes(random)) {
-      random = getRandomClassName(config);
+      while (classMappingList.includes(random)) {
+        random = getRandomClassName(config);
+      }
+
+      classMapping.set(className, random);
     }
-
-    classMapping.set(className, random);
   });
 
   const rawClassesMap = new Map();
@@ -46,7 +48,7 @@ export default function transformTemplates(
     .sort((a, b) => b.length - a.length)
     .forEach((classNames) => {
       let match: RegExpExecArray;
-      const regex = new RegExp(escapeClassName(classNames), 'g');
+      const regex = new RegExp(`(?<="class",.*?)${escapeClassName(classNames)}(?=[\\s"')])`, 'g');
       while ((match = regex.exec(code)) !== null) {
         if (match.index > 0 && code[match.index - 2] === ',') {
           code = code.replace(match[0], `"${rawClassesMap.get(classNames)}"`);
